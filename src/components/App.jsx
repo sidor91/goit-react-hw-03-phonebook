@@ -10,14 +10,35 @@ class App extends React.Component {
     filter: '',
   };
 
+  componentDidMount(prevProps, prevState) {
+    if (localStorage.getItem('contacts')) {
+      this.setState({ contacts: JSON.parse(localStorage.getItem('contacts')) });
+    } 
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   formSubmitHandler = data => {
-    this.setState(prevState => ({ contacts: [...prevState.contacts, data] }));
+    this.setState(prevState => {
+      return {
+        contacts: [...prevState.contacts, data]
+      }
+    }
+      
+      );
+     ;
   };
 
   contactDeleteHandler = id => {
     this.setState(prevState => {
+      const updatedArr = prevState.contacts.filter(contact => contact.id !== id)
+      localStorage.setItem('contacts', JSON.stringify(updatedArr));
       return {
-        contacts: prevState.contacts.filter(contact => contact.id !== id),
+        contacts: updatedArr,
       };
     });
   };
